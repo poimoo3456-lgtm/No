@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>🔎 เช็คสถานะ</h2>
+
+<input id="oid" placeholder="กรอก Order ID">
+<button onclick="check()">ตรวจสอบ</button>
+
+<div id="result"></div>
+
+<script>
+function check(){
+let id=document.getElementById("oid").value;
+google.script.run.withSuccessHandler(function(data){
+if(!data){result.innerHTML="ไม่พบข้อมูล";return;}
+let html="สถานะ: "+data.status;
+if(data.status=="อนุมัติแล้ว"){
+html+="<br>ลิงก์:<br>"+data.links.replace(/,/g,"<br>");
+}
+result.innerHTML=html;
+}).checkOrder(id);
+}
+</script>
+</body>
+</html>
