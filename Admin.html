@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>🔐 Admin</h2>
+
+รหัส: <input type="password" id="pass">
+<button onclick="login()">เข้า</button>
+
+<div id="data"></div>
+
+<script>
+function login(){
+if(document.getElementById("pass").value!="1669"){
+alert("รหัสผิด");return;
+}
+google.script.run.withSuccessHandler(show).getOrders();
+}
+
+function show(data){
+let html="";
+data.slice(1).forEach((r,i)=>{
+html+=r.join(" | ")+" <button onclick='approve("+(i+2)+")'>อนุมัติ</button><br><br>";
+});
+dataDiv.innerHTML=html;
+}
+
+function approve(row){
+google.script.run.approve(row);
+alert("อนุมัติแล้ว");
+location.reload();
+}
+</script>
+
+<div id="dataDiv"></div>
+
+</body>
+</html>
