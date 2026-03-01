@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:sans-serif;background:#f2f2f2}
+.card{background:white;margin:10px;padding:15px;border-radius:10px}
+button{background:#1565C0;color:white;border:none;padding:8px;border-radius:6px}
+.cart{position:fixed;bottom:20px;right:20px}
+</style>
+</head>
+<body>
+
+<h2>🛒 ร้านลิงก์ออนไลน์</h2>
+
+<div class="card">
+Netflix Premium - 99 บาท
+<button onclick="addItem('Netflix Premium',99,'https://yourlink1.com')">เพิ่ม</button>
+</div>
+
+<div class="card">
+Canva Pro - 59 บาท
+<button onclick="addItem('Canva Pro',59,'https://yourlink2.com')">เพิ่ม</button>
+</div>
+
+<div class="cart">
+<button onclick="checkout()">ตะกร้า (<span id="count">0</span>)</button>
+</div>
+
+<script>
+let cart=[];
+
+function addItem(n,p,l){
+cart.push({n,p,l});
+document.getElementById("count").innerText=cart.length;
+}
+
+function checkout(){
+if(cart.length==0){alert("ไม่มีสินค้า");return;}
+
+let total=0,items=[],links=[];
+cart.forEach(i=>{total+=i.p;items.push(i.n);links.push(i.l);});
+
+document.body.innerHTML=`
+<h3>ยอด ${total} บาท</h3>
+ชื่อผู้โอน:<br>
+<input id="name"><br>
+แนบสลิป:<br>
+<input type="file" id="file"><br><br>
+<button onclick="pay('${items}','${links}',${total})">ยืนยัน</button>
+`;
+}
+
+function pay(items,links,total){
+let name=document.getElementById("name").value;
+let file=document.getElementById("file").files[0];
+if(!name||!file){alert("กรอกให้ครบ");return;}
+
+let reader=new FileReader();
+reader.onload=function(e){
+let base64=e.target.result.split(",")[1];
+google.script.run.withSuccessHandler(function(id){
+alert("Order ID: "+id);
+window.location="?page=check";
+}).saveOrder(name,items,total,links,base64,file.name);
+}
+reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
